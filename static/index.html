@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LANDGUARD | Himalayan Landslide Monitor</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+:root{--bg:#07111d;--panel:#101e2d;--line:#23384b;--muted:#91a5b7;--teal:#28c3b5;--white:#edf5f8}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(130deg,#0b1d2d,#07111d 55%);color:var(--white);font-family:Inter,Segoe UI,Arial,sans-serif}
+header{padding:24px 4vw 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:20px}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#27c5b7,#087b82);display:grid;place-items:center;font-size:25px;font-weight:900}.brand h1{font-size:21px;letter-spacing:2px;margin:0}.brand small{display:block;color:#8aa4b6;font-size:9px;letter-spacing:1.8px;margin-top:4px}.status{font-size:11px;color:#85e7c8;border:1px solid #286457;border-radius:30px;padding:9px 13px}
+main{max-width:1500px;margin:auto;padding:25px 4vw 35px}.intro{display:flex;justify-content:space-between;align-items:end;margin-bottom:20px;gap:15px}.eyebrow{color:var(--teal);font-size:10px;letter-spacing:2px;font-weight:700}.intro h2{font-size:27px;margin:7px 0}.intro p{margin:0;color:var(--muted);font-size:13px}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin-bottom:16px}.card,.panel{background:rgba(16,30,45,.95);border:1px solid var(--line);border-radius:14px}.card{padding:17px}.label{font-size:9px;letter-spacing:1.5px;color:#8ea5b8;font-weight:700}.value{font-size:23px;font-weight:800;margin:9px 0 4px}.sub{font-size:10px;color:#8199aa}.layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.85fr);gap:15px}.panel{padding:17px;margin-bottom:14px}.panel h3{font-size:14px;margin:0 0 5px}.desc{color:var(--muted);font-size:11px;margin:0 0 14px}.maphead{display:flex;justify-content:space-between;align-items:start}.pill{font-size:9px;color:#8fc9c3;border:1px solid #28534f;border-radius:5px;padding:5px 7px}#map{height:510px;border-radius:10px;overflow:hidden;background:#152b3d}.leaflet-container{background:#152b3d}.districts{display:grid;gap:8px}.district{border:1px solid #294257;background:#0b1927;color:white;border-radius:9px;padding:12px;text-align:left;display:flex;justify-content:space-between;align-items:center;cursor:pointer}.district.active{border-color:var(--teal);background:#103238}.district b{font-size:12px}.district small{display:block;color:#8da4b5;font-size:10px;margin-top:4px}.weatherline{display:flex;align-items:center;gap:15px;margin:12px 0}.temp{font-size:42px;font-weight:800}.temp span{font-size:17px;color:#9bb0c0}.wx{color:#a5bac8;font-size:12px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:15px}.grid2 small{display:block;color:#8da4b5;font-size:10px;margin-bottom:4px}.grid2 b{font-size:13px}.riskbar{height:8px;background:#26394b;border-radius:9px;overflow:hidden;margin:12px 0}.riskbar i{display:block;height:100%;background:linear-gradient(90deg,#31c69b,#e9b44c,#ef6b75)}.riskrow{display:flex;justify-content:space-between;align-items:center}.badge{font-size:10px;font-weight:800;padding:6px 9px;border-radius:20px}.low{background:#124538;color:#77e5bd}.moderate{background:#4c3a18;color:#ffd47b}.high{background:#512733;color:#ffabb5}.note{border:1px solid #66542e;background:#2c2619;color:#f1d38b;padding:13px 15px;border-radius:10px;font-size:11px;line-height:1.6;margin-top:5px}.note b{display:block;margin-bottom:3px}.muted{font-size:10px;color:#8da4b5;line-height:1.55}.refresh{background:#163349;color:#c6e5e5;border:1px solid #31566a;border-radius:7px;padding:7px 10px;cursor:pointer}.footer{display:flex;justify-content:space-between;color:#71899b;font-size:10px;padding-top:20px}.legend{display:flex;gap:15px;flex-wrap:wrap;color:#9bb0c0;font-size:10px;padding-top:11px}.legend span:before{content:"";display:inline-block;width:8px;height:8px;border-radius:50%;background:#27c5b7;margin-right:6px}.legend span:last-child:before{background:#f49b45}
+@media(max-width:850px){.layout{grid-template-columns:1fr}.cards{grid-template-columns:1fr 1fr}#map{height:390px}}@media(max-width:560px){header,.intro{align-items:flex-start;flex-direction:column}.cards{grid-template-columns:1fr 1fr}.brand h1{font-size:17px}main{padding:20px 13px}.intro h2{font-size:22px}.footer{display:block;line-height:2}}
+input:focus{outline:1px solid var(--teal)}
+</style></head>
+<body>
+<header><div class="brand"><div class="logo">L</div><div><h1>LANDGUARD</h1><small>LANDSLIDE RISK & WEATHER MONITOR</small></div></div><div class="status">● LIVE WEATHER CONNECTION</div></header>
+<main>
+<div class="intro"><div><div class="eyebrow">UTTARAKHAND · INDIA</div><h2>Himalayan district monitoring</h2><p>Weather-informed situational awareness for selected landslide-prone districts.</p></div><div class="pill">ACADEMIC PROTOTYPE</div></div>
+<div class="cards">
+<div class="card"><div class="label">MONITORED DISTRICTS</div><div class="value">03</div><div class="sub">Rudraprayag · Chamoli · Uttarkashi</div></div>
+<div class="card"><div class="label">SELECTED DISTRICT</div><div class="value" id="selectedName">Rudraprayag</div><div class="sub" id="coords">30.2844° N, 78.9811° E · reference point</div></div>
+<div class="card"><div class="label">WEATHER SCREENING</div><div class="value" id="riskTop">Loading</div><div class="sub">Experimental indicator, not an official warning</div></div>
+</div>
+<div class="layout"><section class="panel"><div class="maphead"><div><h3>Interactive Uttarakhand map</h3><p class="desc">Select a marker or district. Change map layer using the control.</p></div><span class="pill">OSM / ESRI</span></div><div id="map"></div><div class="legend"><span>Monitored district reference point</span><span>Selected district</span></div><p class="muted">Markers indicate district-centre reference locations only. They are not official district boundary polygons or verified landslide incident coordinates.</p></section>
+<aside>
+<section class="panel"><h3>Choose a district</h3><p class="desc">Select one of the three study locations.</p><div class="districts" id="districtButtons"></div></section>
+<section class="panel"><div class="maphead"><div><h3>Live weather</h3><p class="desc" id="weatherPlace">Rudraprayag · Open-Meteo</p></div><button class="refresh" id="refresh">↻ Refresh</button></div><div id="weather"><p class="muted">Fetching current conditions…</p></div></section>
+<section class="panel"><h3>Weather-based screening</h3><p class="desc">Transparent demo calculation from forecast rainfall and rain probability.</p><div class="riskrow"><div class="value" id="score">— / 100</div><span class="badge moderate" id="badge">WAITING</span></div><div class="riskbar"><i id="bar" style="width:0"></i></div><p class="muted" id="riskText">Waiting for weather data.</p></section>
+</aside></div>
+
+<section class="panel" id="ai-center" style="margin-top:16px">
+  <div class="maphead"><div><h3>AI Landslide Susceptibility Center</h3>
+  <p class="desc">Random Forest model endpoint · district-specific feature assessment</p></div><span class="pill">MACHINE LEARNING</span></div>
+  <div class="note" style="margin:10px 0 14px">The AI model must be trained and validated using a real, labelled landslide inventory and non-landslide samples before it can make predictions. This package does not invent training data.</div>
+  <div class="grid2">
+    <label><small>Slope (degrees)</small><input id="ai-slope" type="number" min="0" max="90" step="0.1" value="25" style="width:100%;padding:10px;border-radius:7px;background:#0b1927;color:white;border:1px solid #294257"></label>
+    <label><small>Elevation (metres)</small><input id="ai-elevation" type="number" min="0" max="9000" step="1" value="1800" style="width:100%;padding:10px;border-radius:7px;background:#0b1927;color:white;border:1px solid #294257"></label>
+    <label><small>Rainfall, last 24h (mm)</small><input id="ai-rain24" type="number" min="0" step="0.1" value="20" style="width:100%;padding:10px;border-radius:7px;background:#0b1927;color:white;border:1px solid #294257"></label>
+    <label><small>Rainfall, last 72h (mm)</small><input id="ai-rain72" type="number" min="0" step="0.1" value="45" style="width:100%;padding:10px;border-radius:7px;background:#0b1927;color:white;border:1px solid #294257"></label>
+    <label><small>Soil moisture (%)</small><input id="ai-moisture" type="number" min="0" max="100" step="0.1" value="35" style="width:100%;padding:10px;border-radius:7px;background:#0b1927;color:white;border:1px solid #294257"></label>
+    <label><small>Distance to road (m)</small><input id="ai-road" type="number" min="0" step="1" value="500" style="width:100%;padding:10px;border-radius:7px;background:#0b1927;color:white;border:1px solid #294257"></label>
+    <label><small>Vegetation index / NDVI (-1 to 1)</small><input id="ai-ndvi" type="number" min="-1" max="1" step="0.01" value="0.45" style="width:100%;padding:10px;border-radius:7px;background:#0b1927;color:white;border:1px solid #294257"></label>
+    <label><small>Lithology code (dataset-defined)</small><input id="ai-lithology" type="number" step="1" value="1" style="width:100%;padding:10px;border-radius:7px;background:#0b1927;color:white;border:1px solid #294257"></label>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;margin-top:14px;flex-wrap:wrap">
+    <button class="refresh" id="ai-predict">Run AI assessment</button>
+    <span class="muted" id="ai-status">Checking whether a trained model is available…</span>
+  </div>
+  <div id="ai-result" class="muted" style="margin-top:14px;line-height:1.7">No AI result yet.</div>
+</section>
+
+<div class="note"><b>Important safety and accuracy note</b>LANDGUARD is an academic prototype. The indicator is a simple weather-based screening heuristic, not a trained or validated landslide prediction model. Weather alone cannot determine whether a landslide will occur. For real warnings and emergency decisions, follow official GSI, IMD and district-administration bulletins.</div>
+<div class="footer"><span>LANDGUARD · Student project prototype</span><span>Weather: Open-Meteo · Maps: OpenStreetMap / Esri</span></div>
+</main>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const places=[
+{name:'Rudraprayag',lat:30.2844,lon:78.9811},
+{name:'Chamoli',lat:30.4020,lon:79.3206},
+{name:'Uttarkashi',lat:30.7268,lon:78.4354}
+];
+const map=L.map('map').setView([30.52,78.75],8);
+const layers={
+'Street':L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'&copy; OpenStreetMap contributors',maxZoom:19}),
+'Terrain':L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles &copy; Esri'}),
+'Satellite':L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{attribution:'Tiles &copy; Esri'})
+};
+layers.Street.addTo(map);L.control.layers(layers,null,{position:'topright'}).addTo(map);
+let selected=places[0], markers={};
+places.forEach(p=>{markers[p.name]=L.circleMarker([p.lat,p.lon],{radius:8,color:'#28c3b5',fillColor:'#28c3b5',fillOpacity:.9,weight:2}).addTo(map).bindPopup('<b>'+p.name+'</b><br>District-centre reference point');markers[p.name].on('click',()=>choose(p));});
+function buttons(){document.getElementById('districtButtons').innerHTML=places.map(p=>`<button class="district ${p.name===selected.name?'active':''}" data-name="${p.name}"><span><b>${p.name}</b><small>${p.lat.toFixed(4)}° N, ${p.lon.toFixed(4)}° E</small></span><span>›</span></button>`).join('');document.querySelectorAll('.district').forEach(b=>b.onclick=()=>choose(places.find(p=>p.name===b.dataset.name)));}
+function choose(p){selected=p;document.getElementById('selectedName').textContent=p.name;document.getElementById('coords').textContent=p.lat.toFixed(4)+'° N, '+p.lon.toFixed(4)+'° E · reference point';document.getElementById('weatherPlace').textContent=p.name+' · Open-Meteo';places.forEach(q=>markers[q.name].setStyle({color:q.name===p.name?'#f49b45':'#28c3b5',fillColor:q.name===p.name?'#f49b45':'#28c3b5',radius:q.name===p.name?11:8}));map.flyTo([p.lat,p.lon],10,{duration:1});buttons();loadWeather();}
+function weatherText(c){return ({0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Fog',51:'Drizzle',53:'Drizzle',55:'Dense drizzle',61:'Slight rain',63:'Moderate rain',65:'Heavy rain',80:'Rain showers',81:'Rain showers',82:'Heavy showers',95:'Thunderstorm'})[c]||'Weather conditions';}
+async function loadWeather(){const box=document.getElementById('weather');box.innerHTML='<p class="muted">Fetching live weather…</p>';try{const url=`https://api.open-meteo.com/v1/forecast?latitude=${selected.lat}&longitude=${selected.lon}&current=temperature_2m,relative_humidity_2m,precipitation,weather_code,wind_speed_10m&daily=precipitation_sum,precipitation_probability_max&forecast_days=3&timezone=Asia%2FKolkata`;const r=await fetch(url);if(!r.ok)throw Error('API error');const d=await r.json(),c=d.current,day=d.daily;box.innerHTML=`<div class="weatherline"><div class="temp">${Math.round(c.temperature_2m)}°<span>C</span></div><div class="wx">${weatherText(c.weather_code)}<br>Updated ${new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})}</div></div><div class="grid2"><div><small>Humidity</small><b>${c.relative_humidity_2m}%</b></div><div><small>Wind speed</small><b>${c.wind_speed_10m} km/h</b></div><div><small>Forecast rainfall today</small><b>${day.precipitation_sum[0]} mm</b></div><div><small>Rain probability</small><b>${day.precipitation_probability_max[0]}%</b></div></div>`;const score=Math.min(100,Math.round((day.precipitation_sum[0]||0)*.55+(day.precipitation_probability_max[0]||0)*.35+(c.precipitation||0)*3));const level=score>=65?'High':score>=35?'Moderate':'Low';document.getElementById('score').textContent=score+' / 100';document.getElementById('riskTop').textContent=level;document.getElementById('riskTop').style.color=level==='High'?'#ff9eaa':level==='Moderate'?'#ffd47b':'#77e5bd';const badge=document.getElementById('badge');badge.textContent=level.toUpperCase();badge.className='badge '+level.toLowerCase();document.getElementById('bar').style.width=score+'%';document.getElementById('riskText').textContent=`Screening score is driven by forecast rainfall (${day.precipitation_sum[0]} mm) and rain probability (${day.precipitation_probability_max[0]}%). It is not a probability of a landslide.`;}catch(e){box.innerHTML='<p class="muted">Live weather could not be fetched. Check internet access and refresh. No sample values are substituted.</p>';document.getElementById('riskTop').textContent='Unavailable';document.getElementById('score').textContent='— / 100';document.getElementById('badge').textContent='NO DATA';document.getElementById('riskText').textContent='Risk screening is unavailable because live weather data did not load.';document.getElementById('bar').style.width='0';}}
+document.getElementById('refresh').onclick=loadWeather;buttons();loadWeather();
+
+async function checkAIStatus(){
+ const s=document.getElementById('ai-status');
+ try{const r=await fetch('/api/status');if(!r.ok)throw Error();const d=await r.json();
+ s.textContent=d.model_ready?'Trained model available · '+d.model_name:'No trained model installed yet. Add verified labelled data and train the model.';
+ }catch(e){s.textContent='AI backend is not connected. Run the full-stack app using the README instructions.';}
+}
+document.getElementById('ai-predict').addEventListener('click',async()=>{
+ const out=document.getElementById('ai-result'),btn=document.getElementById('ai-predict');
+ const num=id=>Number(document.getElementById(id).value);
+ const payload={district:selected.name,slope_deg:num('ai-slope'),elevation_m:num('ai-elevation'),
+ rainfall_24h_mm:num('ai-rain24'),rainfall_72h_mm:num('ai-rain72'),soil_moisture_pct:num('ai-moisture'),
+ distance_to_road_m:num('ai-road'),ndvi:num('ai-ndvi'),lithology_code:num('ai-lithology')};
+ btn.disabled=true;out.textContent='Running model…';
+ try{const r=await fetch('/api/predict',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+ const d=await r.json();if(!r.ok)throw Error(d.detail||'Prediction service unavailable');
+ out.innerHTML=`<b>${d.district}: ${d.susceptibility_class} susceptibility</b><br>
+ Model score: ${d.susceptibility_score}% (model confidence score, not event probability)<br>
+ ${d.explanation}<br><span class="muted">Model: ${d.model_name} · Validation balanced accuracy: ${d.validation_balanced_accuracy}% · This is a research screening output, not an official warning.</span>`;
+ }catch(e){out.textContent=e.message+' No prediction has been generated.';}finally{btn.disabled=false;}
+});
+checkAIStatus();
+
+</script></body></html>
